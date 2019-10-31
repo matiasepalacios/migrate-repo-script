@@ -23,6 +23,25 @@ spin() {
         printf "\r${spin:$i:1}"
         sleep .1
     done
+
+}
+
+trackBranch() {
+
+	BRANCH = $1;
+
+	git branch --track "${BRANCH#origin/}" "${BRANCH}";
+
+	pushToNewOrigin ${BRANCH};
+
+}
+
+pushToNewOrigin() {
+
+    BRANCH = $1;
+
+	git push new_origin "${BRANCH#origin/}";
+
 }
 
 REMOTE="${1:-}"
@@ -44,12 +63,8 @@ echo 'Adding the new remote as new_origin';
 git remote add new_origin ${REMOTE} 2>/dev/null & pid=$!
 spin;
 printf "\rdone\n\n";
-echo 'Iterating all the branches and setting to track the remote';
-git branch -r | grep -v '\->' | while read remote; do git branch --track "${remote#origin/}" "$remote"; done 2>/dev/null & pid=$!
-spin;
-printf "\rdone\n\n";
-echo "Iterating through all the branches and pushing to the new remote"
-git branch -r | grep -v '\->' | while read remote; do git checkout "${remote#origin/}" && git push new_origin "${remote#origin/}"; done 2>/dev/null & pid=$!
+echo 'Iterating all the branches and setting to track the remote, then pushing to the new remote';
+git branch -r | grep -v '\->' | while read remote; do trackBranch ${remote}; done 2>/dev/null & pid=$!
 spin;
 printf "\rdone\n\n";
 echo "Removing remote 'origin' and renaming 'new_origin' to 'origin'";
