@@ -40,12 +40,12 @@ echo 'Fetching origin';
 git fetch origin 2>/dev/null & pid=$!
 spin;
 printf "\rdone\n\n";
-echo 'Iterating all the branches and setting to track the remote';
-git branch -r | grep -v '\->' | while read remote; do git branch --track "${remote#origin/}" "$remote"; done 2>/dev/null & pid=$!
-spin;
-printf "\rdone\n\n";
 echo 'Adding the new remote as new_origin';
 git remote add new_origin ${REMOTE} 2>/dev/null & pid=$!
+spin;
+printf "\rdone\n\n";
+echo 'Iterating all the branches and setting to track the remote';
+git branch -r | grep -v '\->' | while read remote; do git branch --track "${remote#origin/}" "$remote"; done 2>/dev/null & pid=$!
 spin;
 printf "\rdone\n\n";
 echo "Iterating through all the branches and pushing to the new remote"
