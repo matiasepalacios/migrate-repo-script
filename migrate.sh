@@ -42,6 +42,8 @@ pushToNewOrigin() {
 
 	git push new_origin "${BRANCH#origin/}";
 
+	echo ${BRANCH};
+
 }
 
 REMOTE="${1:-}"
