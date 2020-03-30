@@ -41,7 +41,7 @@ git fetch origin 2>/dev/null & pid=$!
 spin;
 printf "\rdone\n\n";
 echo 'Iterating all the branches and setting to track the remote';
-git branch -r | grep -v '\->' | while read remote; do git branch --track "${remote#origin/}" "$remote"; done 2>/dev/null & pid=$!
+git branch -r | grep -v '\->' | while read remote; do git branch --track "${remote#origin/}" "$remote" && git checkout "${remote#origin/}"; done 2>/dev/null & pid=$!
 spin;
 printf "\rdone\n\n";
 echo 'Adding the new remote as new_origin';
@@ -49,7 +49,7 @@ git remote add new_origin ${REMOTE} 2>/dev/null & pid=$!
 spin;
 printf "\rdone\n\n";
 echo "Iterating through all the branches and pushing to the new remote"
-git branch -r | grep -v '\->' | while read remote; do git checkout "${remote#origin/}" && git push new_origin "${remote#origin/}"; done 2>/dev/null & pid=$!
+git branch -l | grep -v '\->' | grep -o '[^* ].*' | while read remote; do git checkout $remote && git push new_origin "${remote}"; done 2>/dev/null & pid=$!
 spin;
 printf "\rdone\n\n";
 echo "Removing remote 'origin' and renaming 'new_origin' to 'origin'";
